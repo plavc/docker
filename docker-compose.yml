@@ -1,0 +1,83 @@
+
+version: '3.3'
+
+services:
+
+  rmq-01:
+    image: rabbitmq:3.8-management-alpine
+    environment: 
+      RABBITMQ_ERLANG_COOKIE: test-secret-cookie
+      RABBITMQ_NODENAME: rabbit@rmq-01
+    volumes:
+      - rmq-01:/var/lib/rabbitmq
+    configs:
+      - source: rmq-enabled_plugins
+        target: /etc/rabbitmq/enabled_plugins
+    configs:
+      - source: rmq-rabbitmq_conf
+        target: /etc/rabbitmq/rabbitmq.conf
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+
+  rmq-02:
+    image: rabbitmq:3.8-management-alpine
+    environment: 
+      RABBITMQ_ERLANG_COOKIE: test-secret-cookie
+      RABBITMQ_NODENAME: rabbit@rmq-02
+    volumes:
+      - rmq-02:/var/lib/rabbitmq
+    configs:
+      - source: rmq-enabled_plugins
+        target: /etc/rabbitmq/enabled_plugins
+    configs:
+      - source: rmq-rabbitmq_conf
+        target: /etc/rabbitmq/rabbitmq.conf
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+
+  rmq-03:
+    image: rabbitmq:3.8-management-alpine
+    environment: 
+      RABBITMQ_ERLANG_COOKIE: test-secret-cookie
+      RABBITMQ_NODENAME: rabbit@rmq-03
+    volumes:
+      - rmq-03:/var/lib/rabbitmq
+    configs:
+      - source: rmq-enabled_plugins
+        target: /etc/rabbitmq/enabled_plugins
+    configs:
+      - source: rmq-rabbitmq_conf
+        target: /etc/rabbitmq/rabbitmq.conf
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+
+  haproxy:
+    image: haproxy:2.1-alpine
+    configs:
+    - source: haproxy_cfg-v1
+      target: /usr/local/etc/haproxy/haproxy.cfg
+    environment:
+      MODE: tcp
+    ports:
+      - 80
+      - 5672
+      - 15672
+
+volumes:
+  rmq-01:
+  rmq-02:
+  rmq-03:
+
+configs:
+  rmq-enabled_plugins:
+    file: ./config/rabbitmq_plugins.txt
+  rmq-rabbitmq_conf:
+    file: ./config/rabbitmq.conf
+  haproxy_cfg-v1:
+    file: ./config/haproxy.cfg
