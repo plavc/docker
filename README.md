@@ -36,7 +36,7 @@ echo $__base
 echo $__root
 ```
 
-**Refresh Server script**
+**Refresh Server Script**
 
 ```
 rabbitmqctl stop_app

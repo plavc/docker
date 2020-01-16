@@ -60,7 +60,7 @@ services:
   haproxy:
     image: haproxy:2.1-alpine
     configs:
-    - source: haproxy_cfg-v1
+    - source: haproxy_cfg
       target: /usr/local/etc/haproxy/haproxy.cfg
     environment:
       MODE: tcp
@@ -79,5 +79,5 @@ configs:
     file: ./config/rabbitmq_plugins.txt
   rmq-rabbitmq_conf:
     file: ./config/rabbitmq.conf
-  haproxy_cfg-v1:
+  haproxy_cfg:
     file: ./config/haproxy.cfg

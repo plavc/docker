@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-DOCKER_STACK_NAME="test"
+DOCKER_STACK_NAME="rabbitmq"
 
 deploy() {
     docker stack deploy -c docker-compose.yml $DOCKER_STACK_NAME
