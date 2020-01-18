@@ -13,7 +13,6 @@ services:
     configs:
       - source: rmq-enabled_plugins
         target: /etc/rabbitmq/enabled_plugins
-    configs:
       - source: rmq-rabbitmq_conf
         target: /etc/rabbitmq/rabbitmq.conf
     deploy:
@@ -31,7 +30,6 @@ services:
     configs:
       - source: rmq-enabled_plugins
         target: /etc/rabbitmq/enabled_plugins
-    configs:
       - source: rmq-rabbitmq_conf
         target: /etc/rabbitmq/rabbitmq.conf
     deploy:
@@ -49,7 +47,6 @@ services:
     configs:
       - source: rmq-enabled_plugins
         target: /etc/rabbitmq/enabled_plugins
-    configs:
       - source: rmq-rabbitmq_conf
         target: /etc/rabbitmq/rabbitmq.conf
     deploy:
