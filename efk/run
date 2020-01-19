@@ -1,0 +1,35 @@
+#!/usr/bin/env bash
+#
+# Run helper script
+# Version: 1.0
+#
+# shellcheck disable=SC1090
+
+set -euo pipefail
+IFS=$'\n\t'
+
+__root="$(dirname "$(realpath "$0")")"
+
+readonly FLUENTD_IMAGE_TAG='v1.8-1'
+readonly DOCKER_STACK_NAME="efk"
+
+cmd_fluentd_build() {
+  docker build -t "plavchub/fluentd:${FLUENTD_IMAGE_TAG}-elasticsearch" \
+               -f "${__root}"/fluentd/Dockerfile \
+               --build-arg TAG="${FLUENTD_IMAGE_TAG}" \
+               "${__root}"/fluentd
+}
+
+cmd_fluentd_rm() {
+  docker service rm efk_fluentd || true
+  docker config rm efk_fluentd_conf || true
+}
+
+cmd_fluentd_test() {
+  docker run --rm --name fluentd-test --log-driver=fluentd --log-opt fluentd-address=host.docker.internal:24224 ubuntu echo 'Test message'
+}
+
+source "${__root}"/../_lib/cli.sh
+source "${__root}"/../_lib/stack.sh
+
+main "$@"
