@@ -1,0 +1,59 @@
+
+version: '3.3'
+
+services:
+
+  mysql:
+    image: mysql:8.0
+    command: --default-authentication-plugin=mysql_native_password
+    environment:
+      MYSQL_ROOT_PASSWORD_FILE: /run/secrets/mysql-root
+    ports:
+      - 3306
+    volumes:
+      - mysql-data:/var/lib/mysql
+    configs:
+      - source: mysql-create
+        target: /docker-entrypoint-initdb.d/create-dbs.sql
+    secrets:
+      - source: mysql-root
+        target: /run/secrets/mysql-root
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    environment:
+      PMA_HOST: mysql
+    ports:
+      - 80
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+
+  adminer:
+    image: adminer
+    environment:
+      ADMINER_DEFAULT_SERVER: mysql
+      ADMINER_DESIGN: nette
+      ADMINER_PLUGINS: tables-filter tinymce
+    ports:
+      - 8080
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+
+volumes:
+  mysql-data:
+
+configs:
+  mysql-create:
+    file: ./config/mysql-create.sql
+
+secrets:
+  mysql-root:
+    file: ./config/mysql-root-password.txt
