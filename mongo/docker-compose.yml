@@ -1,29 +1,34 @@
 
-version: '3.3'
+version: '3.4'
+
+x-deploys:
+  &rmq-deploy
+  replicas: 1
+  restart_policy:
+    condition: on-failure
+    delay: 10s
+    max_attempts: 3
+    window: 120s
 
 services:
 
   mongo:
-    image: mongo:4.2
-    deploy:
-      replicas: 1
-      restart_policy:
-        condition: on-failure
+    image: mongo:${IMAGE_TAG_MONGO?}
     ports:
       - 27017
     environment:
       MONGO_INITDB_ROOT_USERNAME: root
-      MONGO_INITDB_ROOT_PASSWORD: example
+      MONGO_INITDB_ROOT_PASSWORD_FILE: /run/secrets/mongo-root
     volumes:
       - mongo-data:/data/db
       - mongo-config:/data/configdb
+    secrets:
+      - source: mongo-passwd
+        target: /run/secrets/mongo-root
+    deploy: *rmq-deploy
 
   express:
     image: mongo-express
-    deploy:
-      replicas: 1
-      restart_policy:
-        condition: on-failure
     ports:
       - 8081
     environment:
@@ -31,7 +36,12 @@ services:
       ME_CONFIG_MONGODB_PORT: 27017
       ME_CONFIG_MONGODB_ADMINUSERNAME: root
       ME_CONFIG_MONGODB_ADMINPASSWORD: example
+    deploy: *rmq-deploy
 
 volumes:
   mongo-data:
   mongo-config:
+
+secrets:
+  mongo-passwd:
+    file: ./config/passwd.txt
