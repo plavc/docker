@@ -10,7 +10,11 @@ IFS=$'\n\t'
 
 __root="$(dirname "$(realpath "$0")")"
 
-readonly DOCKER_STACK_NAME="rabbitmq"
+readonly DOCKER_STACK_NAME='rabbitmq'
+
+# Docker Compose Variables
+export IMAGE_TAG_RABBITMQ='3.8-management-alpine'
+export IMAGE_TAG_HAPROXY='2.1-alpine'
 
 source "${__root}"/../_lib/cli.sh
 source "${__root}"/../_lib/stack.sh
