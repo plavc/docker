@@ -1,0 +1,51 @@
+
+version: '3.4'
+
+x-deploys:
+  &rmq-deploy
+  replicas: 1
+  restart_policy:
+    condition: on-failure
+    delay: 10s
+    max_attempts: 3
+    window: 120s
+
+services:
+
+  postgres:
+    image: postgres:${IMAGE_TAG_POSTGRES?}
+    ports:
+      - 5432
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-root}
+      POSTGRES_PASSWORD_FILE: /run/secrets/postgres-passwd
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    configs:
+      - source: postgres-init-sql
+        target: /docker-entrypoint-initdb.d/init.sql
+    secrets:
+      - source: postgres-passwd
+        target: /run/secrets/postgres-passwd
+    deploy: *rmq-deploy
+
+  adminer:
+    image: adminer:${IMAGE_TAG_ADMINER?}
+    ports:
+      - 8080
+    environment:
+      ADMINER_DEFAULT_SERVER: postgres
+      ADMINER_DESIGN: nette
+      ADMINER_PLUGINS: tables-filter tinymce
+    deploy: *rmq-deploy
+
+volumes:
+  postgres-data:
+
+configs:
+  postgres-init-sql:
+    file: ./config/init.sql
+
+secrets:
+  postgres-passwd:
+    file: ./config/passwd.txt
