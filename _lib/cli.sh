@@ -26,7 +26,15 @@ _command_execute() {
   if [[ "$(type -t "${cmd_fun}")" != 'function' ]]; then
     cmd_fun="$(_command_from_args "$@" 'help')"
   fi
+  _command_execute_silent "${cmd_fun}_pre"
   ${cmd_fun} "$@"
+  _command_execute_silent "${cmd_fun}_post"
+}
+
+_command_execute_silent() {
+  if [[ "$(type -t "$1")" == 'function' ]]; then
+    $1
+  fi
 }
 
 cmd_help() {
