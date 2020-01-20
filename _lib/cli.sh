@@ -10,9 +10,13 @@ __command_prefix='cmd'
 
 _command_from_args() {
   local command="${__command_prefix}"
-  for d in "$@"; do
-    command="${command}_${d}"
-  done
+  if [[ -z "${1:-}" ]]; then
+      command="${command}_default"
+  else
+    for d in "$@"; do
+      command="${command}_${d}"
+    done
+  fi
   echo "${command}"
 }
 
@@ -23,6 +27,10 @@ _command_execute() {
     cmd_fun="$(_command_from_args "$@" 'help')"
   fi
   ${cmd_fun} "$@"
+}
+
+cmd_help() {
+  echo "Usage: $0 "
 }
 
 main() {

@@ -43,6 +43,10 @@ cmd_stack_help() {
   echo "Usage: $0 stack { deploy | redeploy | rm }"
 }
 
+cmd_default() {
+  cmd_stack_deploy
+}
+
 _scale_services() {
   local replicas=$1
   local services
