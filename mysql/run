@@ -12,6 +12,11 @@ __root="$(dirname "$(realpath "$0")")"
 
 readonly DOCKER_STACK_NAME="mysql"
 
+# Docker Compose Variables
+export IMAGE_TAG_MYSQL='8.0'
+export IMAGE_TAG_PHPMYADMIN='latest'
+export IMAGE_TAG_ADMINER='latest'
+
 source "${__root}"/../_lib/cli.sh
 source "${__root}"/../_lib/stack.sh
 
