@@ -1,9 +1,17 @@
 
-version: '3.3'
+version: '3.4'
+
+x-logging-options:
+  &fluentd-logging-options
+  fluentd-address: host.docker.internal:24224
+  fluentd-async-connect: 'true'
+  fluentd-retry-wait: 1s
+  fluentd-max-retries: 30
 
 services:
+
   elasticsearch:
-    image: elasticsearch:7.5.1
+    image: elasticsearch:${IMAGE_TAG_ELASTICSEARCH?}
     environment:
       node.name: 'SYD'
       discovery.type: 'single-node'
@@ -12,32 +20,26 @@ services:
     volumes:
       - elasticsearch-data:/usr/share/elasticsearch/data
     ports:
-      - 9200:9200
-      - 9300:9300
+      - 9200
+      - 9300
     logging:
       driver: fluentd
       options:
-        fluentd-address: host.docker.internal:24224
-        fluentd-async-connect: 'true'
-        fluentd-retry-wait: 1s
-        fluentd-max-retries: 30
+        << : *fluentd-logging-options
         tag: ${LOG_OPT_TAG_PREFIX}.efk.elasticsearch
 
   kibana:
-    image: kibana:7.5.1
+    image: kibana:${IMAGE_TAG_KIBANA?}
     ports:
-      - 5601:5601
+      - 5601
     logging:
       driver: fluentd
       options:
-        fluentd-address: host.docker.internal:24224
-        fluentd-async-connect: 'true'
-        fluentd-retry-wait: 1s
-        fluentd-max-retries: 30
-        tag: ${LOG_OPT_TAG_PREFIX}.efk.kibana
+        << : *fluentd-logging-options
+        tag: ${LOG_OPT_TAG_PREFIX}.efk.elasticsearch
 
   fluentd:
-    image: plavchub/fluentd:v1.8-1-elasticsearch
+    image: ${IMAGE_FLUENTD?}
     environment:
       ELASTICSEARCH_HOST: elasticsearch
     configs:

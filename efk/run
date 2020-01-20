@@ -13,8 +13,14 @@ __root="$(dirname "$(realpath "$0")")"
 readonly FLUENTD_IMAGE_TAG='v1.8-1'
 readonly DOCKER_STACK_NAME="efk"
 
+# Docker Compose Variables
+export IMAGE_TAG_ELASTICSEARCH='7.5.1'
+export IMAGE_TAG_KIBANA='7.5.1'
+export IMAGE_FLUENTD="plavchub/fluentd:${FLUENTD_IMAGE_TAG}-elasticsearch"
+
+# Additional commands
 cmd_fluentd_build() {
-  docker build -t "plavchub/fluentd:${FLUENTD_IMAGE_TAG}-elasticsearch" \
+  docker build -t "${IMAGE_FLUENTD}" \
                -f "${__root}"/fluentd/Dockerfile \
                --build-arg TAG="${FLUENTD_IMAGE_TAG}" \
                "${__root}"/fluentd
