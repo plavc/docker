@@ -1,0 +1,63 @@
+
+version: '3.4'
+
+x-deploys:
+  &rmq-deploy
+  replicas: 1
+  restart_policy:
+    condition: on-failure
+
+services:
+
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:${IMAGE_TAG_ELK?}
+    ports:
+      - 9200
+      - 9300
+    configs:
+      - source: elasticsearch-config
+        target: /usr/share/elasticsearch/config/elasticsearch.yml
+    environment:
+      ES_JAVA_OPTS: "-Xmx256m -Xms256m"
+      ELASTIC_PASSWORD: changeme
+      # Use single node discovery in order to disable production mode and avoid bootstrap checks
+      # see https://www.elastic.co/guide/en/elasticsearch/reference/current/bootstrap-checks.html
+      discovery.type: single-node
+    deploy: *rmq-deploy
+
+  logstash:
+    image: docker.elastic.co/logstash/logstash:${IMAGE_TAG_ELK?}
+    ports:
+      - 5000
+      - 9600
+    configs:
+      - source: logstash-config
+        target: /usr/share/logstash/config/logstash.yml
+      - source: logstash-pipeline
+        target: /usr/share/logstash/pipeline/logstash.conf
+    environment:
+      LS_JAVA_OPTS: '-Xmx256m -Xms256m'
+    deploy: *rmq-deploy
+
+  kibana:
+    image: docker.elastic.co/kibana/kibana:${IMAGE_TAG_ELK?}
+    ports:
+      - 5601
+    configs:
+      - source: kibana-config
+        target: /usr/share/kibana/config/kibana.yml
+    deploy: *rmq-deploy
+
+configs:
+
+  elasticsearch-config:
+    file: ./config/elasticsearch.yml
+
+  logstash-config:
+    file: ./config/logstash.yml
+
+  logstash-pipeline:
+    file: ./config/logstash-pipeline.conf
+
+  kibana-config:
+    file: ./config/kibana.yml
