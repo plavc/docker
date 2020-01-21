@@ -6,24 +6,24 @@ Elasticsearch + Fluentd + Kibana (EFK) Stack on Docker Swarm.
 
 - Deploy stack
 
-`./run stack deploy`
+    `./run stack deploy`
 
 - Remove stack
 
-`./run stack rm`
+    `./run stack rm`
 
 - Remove and deploy stack
 
-`./run stack redeploy`
+    `./run stack redeploy`
 
 - Build Fluentd image
 
-`./run fluentd build`
+    `./run fluentd build`
 
 - Remove Fluentd Service and config *(developement porpose)*
 
-`./run fluentd rm`
+    `./run fluentd rm`
 
 - Teest Fluentd
 
-`./run fluentd test`
+    `./run fluentd test`

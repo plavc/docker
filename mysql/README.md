@@ -6,13 +6,12 @@ MySQL Docker Swarm stack with Adminer and PhpMyAdmin web clients.
 
 - Deploy stack
 
-`./run stack deploy`
+    `./run stack deploy`
 
 - Remove stack
 
-`./run stack rm`
+    `./run stack rm`
 
 - Remove and deploy stack
 
-`./run stack redeploy`
-
+    `./run stack redeploy`

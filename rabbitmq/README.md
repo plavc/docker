@@ -6,15 +6,15 @@ RabbitMQ Docker Swarm cluster with 3 instances.
 
 - Deploy stack
 
-`./run stack deploy`
+    `./run stack deploy`
 
 - Remove stack
 
-`./run stack rm`
+    `./run stack rm`
 
 - Remove and deploy stack
 
-`./run stack redeploy`
+    `./run stack redeploy`
 
 ## Miscellaneous
 

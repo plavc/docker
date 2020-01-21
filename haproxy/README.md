@@ -6,12 +6,12 @@ HAProxy Docker Swarm Stack.
 
 - Deploy stack
 
-`./run stack deploy`
+    `./run stack deploy`
 
 - Remove stack
 
-`./run stack rm`
+    `./run stack rm`
 
 - Remove and deploy stack
 
-`./run stack redeploy`
+    `./run stack redeploy`
