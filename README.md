@@ -7,8 +7,10 @@ Contains Docker Swarm basic stacks and other utilities.
 1. Logging
     1. [EFK Stack](https://github.com/plavc/docker/blob/master/efk/README.md)
     1. [ELK Stack](https://github.com/plavc/docker/blob/master/elk/README.md)
-3. Networking
+1. Networking
     1. [HAProxy](https://github.com/plavc/docker/blob/master/haproxy/README.md)
+1. Web Servers
+    1. [Nginx](nginx/)
 1. Databases
     1. [MySQL](https://github.com/plavc/docker/blob/master/mysql/README.md)
     1. [Postgres](https://github.com/plavc/docker/blob/master/postgres/README.md)
