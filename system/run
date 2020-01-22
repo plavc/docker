@@ -1,0 +1,19 @@
+#!/usr/bin/env bash
+#
+# Run helper script
+# Version: 1.0
+#
+# shellcheck disable=SC1090
+
+set -euo pipefail
+IFS=$'\n\t'
+
+__root="$(dirname "$(realpath "$0")")"
+
+source "${__root}"/../_lib/cli.sh
+
+cmd_prune() {
+  docker system prune
+}
+
+main "$@"
