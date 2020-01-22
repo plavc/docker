@@ -1,0 +1,60 @@
+
+version: '3.6'
+
+x-deploys:
+  &rmq-deploy
+  replicas: 1
+  restart_policy:
+    condition: on-failure
+    delay: 10s
+    max_attempts: 3
+    window: 120s
+
+services:
+
+  sonarqube:
+    image: sonarqube:community-beta
+    #command: --init
+    ports:
+      - 9000
+    environment:
+      sonar.jdbc.username: sonar
+      sonar.jdbc.password: sonar
+      sonar.jdbc.url: jdbc:postgresql://postgres/sonar
+      sonar.web.host: 0.0.0.0
+    volumes:
+      - sonarqube-extensions:/opt/sonarqube/extensions
+      - sonarqube-logs:/opt/sonarqube/logs
+      - sonarqube-data:/opt/sonarqube/data
+      - sonarqube-conf:/opt/sonarqube/conf
+    deploy: *rmq-deploy
+
+  postgres:
+    image: postgres:${IMAGE_TAG_POSTGRES?}
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-root}
+      POSTGRES_PASSWORD_FILE: /run/secrets/postgres-passwd
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    configs:
+      - source: postgres-init-sql
+        target: /docker-entrypoint-initdb.d/init.sql
+    secrets:
+      - source: postgres-passwd
+        target: /run/secrets/postgres-passwd
+    deploy: *rmq-deploy
+
+volumes:
+  sonarqube-extensions:
+  sonarqube-logs:
+  sonarqube-data:
+  sonarqube-conf:
+  postgres-data:
+
+configs:
+  postgres-init-sql:
+    file: ./config/init.sql
+
+secrets:
+  postgres-passwd:
+    file: ./config/passwd.txt
