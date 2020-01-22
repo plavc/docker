@@ -1,0 +1,36 @@
+
+version: '3.4'
+
+services:
+
+  app1:
+    image: nginx:alpine
+    ports:
+      - 80
+    volumes:
+      - ./examples/app1:/usr/share/nginx/html
+
+  app2:
+    image: nginx:alpine
+    ports:
+      - 80
+    volumes:
+      - ./examples/app2:/usr/share/nginx/html
+
+  db:
+    image: postgres
+    environment:
+      POSTGRES_PASSWORD: postgres
+
+  proxy:
+    image: envoyproxy/envoy-alpine
+    ports:
+      - 9901
+      - 10000
+    configs:
+      - source: envoy-config
+        target: /etc/envoy/envoy.yaml
+
+configs:
+  envoy-config:
+    file: ./config/envoy.yaml
