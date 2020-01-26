@@ -6,7 +6,7 @@
 set -euo pipefail
 IFS=$'\n\t'
 
-__command_prefix='cmd'
+readonly __command_prefix='cmd'
 
 _command_from_args() {
   local command="${__command_prefix}"

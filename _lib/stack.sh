@@ -39,6 +39,14 @@ cmd_stack_scale_up() {
   _scale_services 1
 }
 
+cmd_stack_rm_volumes() {
+  docker volume prune --filter "label=com.docker.stack.namespace=${_DOCKER_STACK_NAME}"
+}
+
+cmd_stack_list_services() {
+  echo docker stack services --format '{{ .Name }}' "${_DOCKER_STACK_NAME}"
+}
+
 cmd_stack_help() {
   echo "Usage: $0 stack { deploy | redeploy | rm }"
 }
