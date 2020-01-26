@@ -1,0 +1,53 @@
+
+version: '3.4'
+
+services:
+
+  grafana:
+    image: grafana/grafana:${IMAGE_TAG_GRAFANA?}
+    ports:
+      - 3000
+    environment:
+      GF_SECURITY_ADMIN_PASSWORD: example
+      GF_INSTALL_PLUGINS: grafana-clock-panel,grafana-simple-json-datasource
+    volumes:
+      - grafana-data:/var/lib/grafana
+    configs:
+      - source: grafana-datasource
+        target: /etc/grafana/provisioning/datasources/predefined.yml
+      - source: grafana-dashboards
+        target: /etc/grafana/provisioning/dashboards/config.yml
+      - source: grafana-dashboards-docker
+        target: /etc/grafana/provisioning/dashboards/dashboard-docker.json
+
+  prometheus:
+    image: prom/prometheus
+    ports:
+      - 9090
+    configs:
+      - source: prometheus-config
+        target: /etc/prometheus/prometheus.yml
+
+  node-exporter:
+    image: prom/node-exporter:latest
+
+  cadvisor:
+    image: google/cadvisor:latest
+    volumes:
+      - /:/rootfs:ro
+      - /var/run:/var/run:rw
+      - /sys:/sys:ro
+      - /var/lib/docker/:/var/lib/docker:ro
+
+volumes:
+  grafana-data:
+
+configs:
+  prometheus-config:
+    file: ./config/prometheus.yml
+  grafana-datasource:
+    file: ./config/grafana-datasources.yml
+  grafana-dashboards:
+    file: ./config/grafana-dashboard.yml
+  grafana-dashboards-docker:
+    file: ./config/grafana-dashboard-docker.json
