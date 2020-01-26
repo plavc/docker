@@ -22,8 +22,10 @@ services:
     volumes:
       - postgres-data:/var/lib/postgresql/data
     configs:
-      - source: postgres-init-sql
-        target: /docker-entrypoint-initdb.d/init.sql
+      - source: postgres-init-users-sql
+        target: /docker-entrypoint-initdb.d/01.sql
+      - source: postgres-init-dbs-sql
+        target: /docker-entrypoint-initdb.d/02.sql
     secrets:
       - source: postgres-passwd
         target: /run/secrets/postgres-passwd
@@ -43,8 +45,10 @@ volumes:
   postgres-data:
 
 configs:
-  postgres-init-sql:
-    file: ./config/init.sql
+  postgres-init-users-sql:
+    file: ./config/01_init_users.sql
+  postgres-init-dbs-sql:
+    file: ./config/02_init_dbs.sql
 
 secrets:
   postgres-passwd:
