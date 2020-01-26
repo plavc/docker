@@ -1,0 +1,26 @@
+#!/usr/bin/env bash
+#
+# Run helper script
+# Version: 1.0
+#
+# shellcheck disable=SC1090
+
+set -euo pipefail
+IFS=$'\n\t'
+
+__root="$(dirname "$(realpath "$0")")"
+
+_run_subfolder_cmd() {
+  local stack="$1"
+  shift;
+  local command="$*"
+
+  local exc="${__root}/${stack}/run"
+  echo "$(${exc} ${command})"
+}
+
+main() {
+  _run_subfolder_cmd "$@"
+}
+
+main "$@"
