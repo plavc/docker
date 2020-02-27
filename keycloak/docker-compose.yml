@@ -1,0 +1,38 @@
+
+version: '3.4'
+
+x-deploys:
+  &rmq-deploy
+  replicas: 1
+  restart_policy:
+    condition: on-failure
+    delay: 10s
+    max_attempts: 3
+    window: 120s
+
+services:
+
+  keycloak:
+    image: jboss/keycloak
+    environment:
+      KEYCLOAK_USER: root
+      KEYCLOAK_PASSWORD: example
+      DB_ADDR: postgres
+      DB_USER: keycloak
+      DB_PASSWORD: keycloakpass
+    ports:
+      - 8080
+    deploy: *rmq-deploy
+
+  postgres:
+    image: postgres:12
+    environment:
+      POSTGRES_DB: keycloak
+      POSTGRES_USER: keycloak
+      POSTGRES_PASSWORD: keycloakpass
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    deploy: *rmq-deploy
+
+volumes:
+  postgres-data:
