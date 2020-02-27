@@ -1,0 +1,34 @@
+
+version: '3.4'
+
+x-deploys:
+  &rmq-deploy
+  replicas: 1
+  restart_policy:
+    condition: on-failure
+    delay: 10s
+    max_attempts: 3
+    window: 120s
+
+services:
+
+  jenkins:
+    image: jenkins/jenkins:${IMAGE_TAG_JENKINS?}
+    ports:
+      - 8080
+      - 50000
+    environment:
+      JAVA_OPTS: -Dhudson.footerURL=https://github.com/plavc/docker
+    volumes:
+      - jenkins-home:/var/jenkins_home
+    deploy: *rmq-deploy
+
+  agent-01:
+    image: plavchub/jenkins-agent
+    volumes:
+      - agent-01-home:/home/jenkins
+    deploy: *rmq-deploy
+
+volumes:
+  jenkins-home:
+  agent-01-home:

@@ -1,0 +1,21 @@
+#!/usr/bin/env bash
+#
+# Run helper script
+# Version: 1.0
+#
+# shellcheck disable=SC1090
+
+set -euo pipefail
+IFS=$'\n\t'
+
+__root="$(dirname "$(realpath "$0")")"
+
+readonly DOCKER_STACK_NAME="jenkins"
+
+# Docker Compose Variables
+export IMAGE_TAG_JENKINS='lts'
+
+source "${__root}"/../_lib/cli.sh
+source "${__root}"/../_lib/stack.sh
+
+main "$@"
