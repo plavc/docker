@@ -1,0 +1,35 @@
+
+version: '3.6'
+
+x-deploys:
+  &rmq-deploy
+  replicas: 1
+  restart_policy:
+    condition: on-failure
+    delay: 10s
+    max_attempts: 3
+    window: 120s
+
+services:
+
+  spectx:
+    image: spectx/spectx:latest
+    environment:
+      SPECTX_ACCEPT_EULA: 'true'
+      SPECTX_ADMIN_PASSWORD: 'example_'
+      JAVA_OPTS_ARRAY: '-Dsx.pu_data.cache.enabled=true'
+    ports:
+      - 8388:8388
+    volumes:
+      - spectx-home:/opt/spectxhome
+    configs:
+      - source: spectx-license
+        target: /opt/spectx/spectx.lic
+    deploy: *rmq-deploy
+
+volumes:
+  spectx-home:
+
+configs:
+  spectx-license:
+    file: ./config/spectx.lic
